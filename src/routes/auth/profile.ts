@@ -4,6 +4,7 @@ import { PrismaClient } from '@prisma/client'
 export const post = async (req: Request, res: Response) => {
     const bearerToken = req.headers.authorization
     if (!bearerToken) return res.status(400).json({ error: "Missing bearer token" })
+    if (!bearerToken.startsWith("Bearer ")) return res.status(400).json({ error: "Invalid bearer token" })
     const token = bearerToken.split(" ")[1]
     const secret = new TextEncoder().encode(process.env.JWT_SECRET)
     const jwt = await jose.jwtVerify(token, secret, { algorithms: ['HS256'] })

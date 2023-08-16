@@ -8,10 +8,143 @@ datasource db {
 }
 
 model User {
+  id          Int          @id @default(autoincrement())
+  email       String       @unique
+  name        String?
+  password    String
+  profile     String
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  Token       Token?
+  GroupMember GroupMember?
+  Favorite    Favorite[]
+  Komentar    Komentar[]
+  History     History[]
+  HistoryCh   HistoryCh[]
+}
+
+model Token {
   id        Int      @id @default(autoincrement())
-  email     String   @unique
-  name      String?
-  password  String
+  userId    Int      @unique
+  token     String   @unique
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  User      User     @relation(fields: [userId], references: [id])
+}
+
+model Series {
+  id        Int          @id @default(autoincrement())
+  judul     String
+  cover     String
+  type      SeriesType
+  status    SeriesStatus
+  genre     Json
+  rating    String
+  rilis     String
+  altJudul  String
+  sinopsis  String       @db.Text
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
+  Chapter   Chapter[]
+  Favorite  Favorite[]
+  Komentar  Komentar[]
+  HistoryCh HistoryCh[]
+}
+
+model Group {
+  id          Int           @id @default(autoincrement())
+  name        String
+  profile     String
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  GroupMember GroupMember[]
+}
+
+model GroupMember {
+  id        Int      @id @default(autoincrement())
+  groupId   Int
+  userId    Int      @unique
+  role      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  Group     Group    @relation(fields: [groupId], references: [id])
+  User      User     @relation(fields: [userId], references: [id])
+}
+
+model Chapter {
+  id         Int        @id @default(autoincrement())
+  seriesId   Int
+  chapterNum Int
+  groupId    Int
+  translator String
+  editor     String
+  imageData  Json
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+  Series     Series     @relation(fields: [seriesId], references: [id])
+  Komentar   Komentar[]
+  History    History[]
+}
+
+model Favorite {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  seriesId  Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  User      User     @relation(fields: [userId], references: [id])
+  Series    Series   @relation(fields: [seriesId], references: [id])
+}
+
+model Komentar {
+  id        Int          @id @default(autoincrement())
+  userId    Int
+  seriesId  Int
+  chapterId Int
+  parentId  Int?
+  type      KomentarType
+  komentar  String
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
+  User      User         @relation(fields: [userId], references: [id])
+  Series    Series       @relation(fields: [seriesId], references: [id])
+  Chapter   Chapter?     @relation(fields: [chapterId], references: [id])
+}
+
+model History {
+  id        Int      @id @default(autoincrement())
+  userId    Int?     @unique
+  chapterId Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  User      User?    @relation(fields: [userId], references: [id])
+  Chapter   Chapter  @relation(fields: [chapterId], references: [id])
+}
+
+model HistoryCh {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  seriesId  Int
+  data      Json
+  latest    Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  User      User     @relation(fields: [userId], references: [id])
+  Series    Series   @relation(fields: [seriesId], references: [id])
+}
+
+enum KomentarType {
+  SERIES
+  CHAPTER
+}
+
+enum SeriesType {
+  MANHWA
+  MANGA
+  MANHUA
+}
+
+enum SeriesStatus {
+  ONGOING
+  COMPLETED
 }

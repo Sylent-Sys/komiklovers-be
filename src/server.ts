@@ -1,18 +1,16 @@
 import express from "express"
 import { router } from "express-file-routing"
-import { fileURLToPath } from 'url'
-import { dirname } from 'path'
+import path from 'path'
 import 'dotenv/config'
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
-const app = express()
-app.use(express.json())
-app.use(express.urlencoded({ extended: true }))
-app.use("/", await router(
-    {
-        directory: __dirname + "/routes",
-    }
-))
-app.listen(process.env.PORT || 3000, () => {
-    console.log(`Server started on port ${process.env.PORT || 3000}`)
-})
+async function main() {
+    const app = express()
+    app.use(express.json())
+    app.use(express.urlencoded({ extended: true }))
+    app.use("/", await router(
+        {
+            directory: path.join(process.cwd(), "/src/routes"),
+        }
+    ))
+    return app
+}
+export default main
