@@ -13,6 +13,14 @@ describe("Test the auth path", () => {
             password: "test",
         }).expect(200);
         const res = await loginJwt;
-        return await request(await main()).post("/auth/profile").set("Authorization", `Bearer ${res.body.jwt}`).expect(200);
+        return await request(await main()).post("/auth/profile").set("Authorization", `Bearer ${res.body.token}`).expect(200);
+    });
+    test("Register", async () => {
+        return request(await main()).post("/auth/register").send({
+            email: "supertest",
+            password: "supertest",
+            name: "supertest",
+            address: "supertest",
+        }).expect(200);
     });
 });

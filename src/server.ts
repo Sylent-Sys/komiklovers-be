@@ -2,6 +2,23 @@ import express from "express"
 import { router } from "express-file-routing"
 import path from 'path'
 import 'dotenv/config'
+declare global {
+    namespace Express {
+        interface Request {
+            isAuth: boolean;
+            token: string;
+            user: {
+                id: number;
+                email: string;
+                name: string;
+                profile: string;
+                password: string;
+                createdAt: Date;
+                updatedAt: Date;
+            }
+        }
+    }
+}
 async function main() {
     const app = express()
     app.use(express.json())

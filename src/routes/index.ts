@@ -1,5 +1,5 @@
-import { Request, Response } from 'express'
-export const get = async (_req: Request, res: Response) => {
+import { Handler } from 'express'
+export const get: Handler = async (_req, res) => {
     return res.json({
         msg: 'Hello World'
     })
